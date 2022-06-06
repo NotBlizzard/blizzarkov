@@ -4,6 +4,8 @@ import os
 from dotenv import load_dotenv
 import re
 import time
+import daemon
+
 
 load_dotenv()
 
@@ -35,6 +37,7 @@ def send_tweets():
         time.sleep(60*15)  # 15 minutes
 
 
-while True:
-    send_tweets()
-    time.sleep(60*75)  # 60 minutes
+with daemon.DaemonContext():
+    while True:
+        send_tweets()
+        time.sleep(60*75)  # 60 minutes
