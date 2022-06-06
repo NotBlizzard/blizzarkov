@@ -30,7 +30,7 @@ def send_tweets():
     text_model = markovify.Text(tweets_joined)
 
     tweets_generated = [
-        text_model.make_short_sentence(280) for x in range(0, 4)]
+        text_model.make_short_sentence(280) for x in range(0, 8)]
 
     for message in tweets_generated:
         api.update_status(status=message)
