@@ -29,15 +29,12 @@ def send_tweets():
 
     text_model = markovify.Text(tweets_joined)
 
-    tweets_generated = [
-        text_model.make_short_sentence(280, tries=100) for x in range(0, 8)]
-
-    for message in tweets_generated:
+    while True:
+        message = text_model.make_short_sentence(280, tries=100)
         api.update_status(status=message)
         time.sleep(60*15)  # 15 minutes
 
 
 with daemon.DaemonContext():
-    while True:
-        send_tweets()
-        time.sleep(60*75)  # 60 minutes
+    send_tweets()
+
