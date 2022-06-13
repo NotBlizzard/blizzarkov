@@ -1,15 +1,11 @@
 import markovify
 import tweepy
-import os
 from dotenv import load_dotenv
 import re
-import time
-import daemon
 
 
 load_dotenv()
 
-tweets = []
 auth = tweepy.OAuthHandler(os.environ['API_KEY'], os.environ['API_KEY_SECRET'])
 auth.set_access_token(os.environ['ACCESS_TOKEN'],
                       os.environ['ACCESS_TOKEN_SECRET'])
@@ -18,7 +14,7 @@ api = tweepy.API(auth)
 
 
 def send_tweets():
-
+    tweets = []
     for message in tweepy.Cursor(api.user_timeline, id=os.environ['TWITTER_ID'], include_rts=False, exclude_replies=True).items():
         tweets.append(message.text.lower())
 
@@ -29,12 +25,8 @@ def send_tweets():
 
     text_model = markovify.Text(tweets_joined)
 
-    while True:
-        message = text_model.make_short_sentence(280, tries=100)
-        api.update_status(status=message)
-        time.sleep(60*15)  # 15 minutes
+    message = text_model.make_short_sentence(280, tries=100)
+    api.update_status(status=message)
 
-
-with daemon.DaemonContext():
-    send_tweets()
+send_tweets()
 
